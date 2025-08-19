@@ -1,0 +1,47 @@
+
+> rest-express@1.0.0 dev
+Cleanup service initialized with scheduled jobs
+5:53:37 PM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 10 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+5:53:50 PM [express] GET /api/chats/7b31e8a7-0400-4aa0-90c8-de942b33c8b5 304 in 2ms :: []
+5:53:50 PM [express] GET /api/contacts/7b31e8a7-0400-4aa0-90c8-de942b33c8b5 304 in 1ms :: []
+5:53:50 PM [express] GET /api/users/public 304 in 1ms :: []
+New WebSocket connection
+[2025-08-18T17:53:54.696Z]  @firebase/database: FIREBASE WARNING: set at /users/7b31e8a7-0400-4aa0-90c8-de942b33c8b5/status failed: permission_denied 
+WebSocket message error: Error: PERMISSION_DENIED: Permission denied
+    at <anonymous> (/home/runner/workspace/node_modules/@firebase/database/src/core/Repo.ts:909:23)
+    at exceptionGuard (/home/runner/workspace/node_modules/@firebase/database/src/core/util/util.ts:540:5)
+    at repoCallOnCompleteCallback (/home/runner/workspace/node_modules/@firebase/database/src/core/Repo.ts:899:5)
+    at <anonymous> (/home/runner/workspace/node_modules/@firebase/database/src/core/Repo.ts:587:7)
+    at <anonymous> (/home/runner/workspace/node_modules/@firebase/database/src/core/PersistentConnection.ts:618:9)
+    at PersistentConnection.onDataMessage_ (/home/runner/workspace/node_modules/@firebase/database/src/core/PersistentConnection.ts:650:9)
+    at Connection.onDataMessage_ (/home/runner/workspace/node_modules/@firebase/database/src/realtime/Connection.ts:321:10)
+    at Connection.onPrimaryMessageReceived_ (/home/runner/workspace/node_modules/@firebase/database/src/realtime/Connection.ts:313:12)
+    at WebSocketConnection.onMessage (/home/runner/workspace/node_modules/@firebase/database/src/realtime/Connection.ts:210:16)
+    at WebSocketConnection.appendFrame_ (/home/runner/workspace/node_modules/@firebase/database/src/realtime/WebSocketConnection.ts:300:12)
+    at WebSocketConnection.handleIncomingFrame (/home/runner/workspace/node_modules/@firebase/database/src/realtime/WebSocketConnection.ts:352:14)
+    at Client.mySock.onmessage (/home/runner/workspace/node_modules/@firebase/database/src/realtime/WebSocketConnection.ts:222:12)
+    at Client.dispatchEvent (/home/runner/workspace/node_modules/faye-websocket/lib/faye/websocket/api/event_target.js:24:30)
+    at Client._receiveMessage (/home/runner/workspace/node_modules/faye-websocket/lib/faye/websocket/api.js:154:10)
+    at Client.<anonymous> (/home/runner/workspace/node_modules/faye-websocket/lib/faye/websocket/api.js:36:49)
+    at Client.emit (node:events:536:35)
+    at Client.<anonymous> (/home/runner/workspace/node_modules/websocket-driver/lib/websocket/driver/hybi.js:460:14)
+    at pipe (/home/runner/workspace/node_modules/websocket-extensions/lib/pipeline/index.js:37:40)
+    at Pipeline._loop (/home/runner/workspace/node_modules/websocket-extensions/lib/pipeline/index.js:44:3)
+    at Pipeline.processIncomingMessage (/home/runner/workspace/node_modules/websocket-extensions/lib/pipeline/index.js:13:8)
+    at Extensions.processIncomingMessage (/home/runner/workspace/node_modules/websocket-extensions/lib/websocket_extensions.js:133:20)
+    at Client._emitMessage (/home/runner/workspace/node_modules/websocket-driver/lib/websocket/driver/hybi.js:451:22)
+    at Client._emitFrame (/home/runner/workspace/node_modules/websocket-driver/lib/websocket/driver/hybi.js:411:19)
+    at Client.parse (/home/runner/workspace/node_modules/websocket-driver/lib/websocket/driver/hybi.js:137:18)
+    at Client.parse (/home/runner/workspace/node_modules/websocket-driver/lib/websocket/driver/client.js:63:58)
+    at IO.write (/home/runner/workspace/node_modules/websocket-driver/lib/websocket/streams.js:80:16)
+    at TLSSocket.ondata (node:internal/streams/readable:1009:22)
+    at TLSSocket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at TLSWrap.onStreamRead (node:internal/stream_base_commons:191:23) {
+  code: 'PERMISSION_DENIED'
+}

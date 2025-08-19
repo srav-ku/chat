@@ -1,0 +1,18 @@
+Create a Chatting Web App that has exact or better than similar of instagram chat ui, fully telegram chatting features
+
+All the chat messages will be saved into firebase and also into google sheets, when user deletes it will delete in firebase but not in google sheets
+When they upload a file (img, video etc other than text message) it goes into cloudinary (my account and the url it creates will upload in firebase and sheets) and it shows that media in the chat (all this happens in no time, milli seconds, like better show up in chat and backend it gets uploaded in cloudinary (when they delete, it should be removed in chat but not in cloud, maybe firebase url can go, but in sheet it stays)
+
+No one can do anything in sheets, only the data gets added which the firebase gets, but wont delete in sheets, also the media wont delete in cloudinary
+
+(Also the chat should delete from firebase automatically after 1 week, or the contact is inactive for 2 days, and the web app wont ask for login with email or number, instead it will generate unique id for every user after entering and accepting, and they need to share that id for others to chat in that, their contact will be saved automatically there in their list, so on next time opening they will still be with same id, unless they delete that account/id, new id generates and all data of them will be gone, and if they want to use the same id some where, there should be something unique way that they use to open their profile to login that id (its hard to remember unique id, so something easy to remember but hard to crack by other users to login others account)
+
+No calling, Video Call but remaining every features mostly
+
+And mostly make efficient ways to use firebase as its free plan, cant take more data, so im using cloudinary for upload and urls store in firebase, so maximum try to make chat delete automatically for 1 week and any inactive it should go in a short time
+
+(All users contacts who they chat with will be in their home, other option to add is, they can choose to make their id visible on everyone (public) page where some contacts will be shown and they can chat, if dont like can leave, if they wish can add to contact save to their account, every user get option to enable that, the displaying changes for every user)
+
+This should be fully realtime web application
+
+Use fully Web Technologies (not any other like python etc)
