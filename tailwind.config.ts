@@ -122,10 +122,10 @@ export default {
       },
       backgroundImage: {
         'instagram-gradient': 'linear-gradient(135deg, var(--instagram-pink), var(--instagram-purple))',
-        'avatar-gradient-1': 'linear-gradient(135deg, var(--instagram-pink), var(--warning))',
-        'avatar-gradient-2': 'linear-gradient(135deg, var(--instagram-blue), var(--instagram-purple))',
-        'avatar-gradient-3': 'linear-gradient(135deg, var(--success), var(--instagram-blue))',
-        'avatar-gradient-4': 'linear-gradient(135deg, var(--warning), var(--instagram-pink))',
+        'avatar-gradient-1': 'linear-gradient(135deg, hsl(214, 88%, 35%), hsl(260, 50%, 45%))',
+        'avatar-gradient-2': 'linear-gradient(135deg, hsl(145, 63%, 32%), hsl(214, 88%, 35%))',
+        'avatar-gradient-3': 'linear-gradient(135deg, hsl(35, 91%, 45%), hsl(260, 50%, 45%))',
+        'avatar-gradient-4': 'linear-gradient(135deg, hsl(0, 62%, 40%), hsl(214, 88%, 35%))',
       }
     },
   },

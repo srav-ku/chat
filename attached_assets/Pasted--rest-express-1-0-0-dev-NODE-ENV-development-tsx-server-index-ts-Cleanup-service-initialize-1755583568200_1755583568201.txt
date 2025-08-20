@@ -1,0 +1,97 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+Cleanup service initialized with scheduled jobs
+6:04:26 AM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 10 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+6:04:43 AM [express] GET /api/chats/9d7544bb-c0bf-434b-94ee-af6963bd5820 304 in 2ms :: []
+6:04:43 AM [express] GET /api/users/public 304 in 1ms :: []
+6:04:43 AM [express] GET /api/contacts/9d7544bb-c0bf-434b-94ee-af6963bd5820 304 in 0ms :: []
+6:04:43 AM [express] GET /api/contacts/9d7544bb-c0bf-434b-94ee-af6963bd5820 304 in 1ms :: []
+6:04:43 AM [express] GET /api/chats/9d7544bb-c0bf-434b-94ee-af6963bd5820 304 in 0ms :: []
+6:04:43 AM [express] GET /api/users/public 304 in 3ms :: []
+New WebSocket connection
+WebSocket message error: TypeError: FirebaseService.setUserOnline is not a function
+    at WebSocket.<anonymous> (/home/runner/workspace/server/routes.ts:45:37)
+    at WebSocket.emit (node:events:524:28)
+    at Receiver.receiverOnMessage (/home/runner/workspace/node_modules/ws/lib/websocket.js:1220:20)
+    at Receiver.emit (node:events:524:28)
+    at Receiver.dataMessage (/home/runner/workspace/node_modules/ws/lib/receiver.js:596:14)
+    at Receiver.getData (/home/runner/workspace/node_modules/ws/lib/receiver.js:496:10)
+    at Receiver.startLoop (/home/runner/workspace/node_modules/ws/lib/receiver.js:167:16)
+    at Receiver._write (/home/runner/workspace/node_modules/ws/lib/receiver.js:94:10)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at Socket.socketOnData (/home/runner/workspace/node_modules/ws/lib/websocket.js:1355:35)
+    at Socket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:191:23)
+New WebSocket connection
+WebSocket message error: TypeError: FirebaseService.setUserOnline is not a function
+    at WebSocket.<anonymous> (/home/runner/workspace/server/routes.ts:45:37)
+    at WebSocket.emit (node:events:524:28)
+    at Receiver.receiverOnMessage (/home/runner/workspace/node_modules/ws/lib/websocket.js:1220:20)
+    at Receiver.emit (node:events:524:28)
+    at Receiver.dataMessage (/home/runner/workspace/node_modules/ws/lib/receiver.js:596:14)
+    at Receiver.getData (/home/runner/workspace/node_modules/ws/lib/receiver.js:496:10)
+    at Receiver.startLoop (/home/runner/workspace/node_modules/ws/lib/receiver.js:167:16)
+    at Receiver._write (/home/runner/workspace/node_modules/ws/lib/receiver.js:94:10)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at Socket.socketOnData (/home/runner/workspace/node_modules/ws/lib/websocket.js:1355:35)
+    at Socket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:191:23)
+New WebSocket connection
+WebSocket message error: TypeError: FirebaseService.setUserOnline is not a function
+    at WebSocket.<anonymous> (/home/runner/workspace/server/routes.ts:45:37)
+    at WebSocket.emit (node:events:524:28)
+    at Receiver.receiverOnMessage (/home/runner/workspace/node_modules/ws/lib/websocket.js:1220:20)
+    at Receiver.emit (node:events:524:28)
+    at Receiver.dataMessage (/home/runner/workspace/node_modules/ws/lib/receiver.js:596:14)
+    at Receiver.getData (/home/runner/workspace/node_modules/ws/lib/receiver.js:496:10)
+    at Receiver.startLoop (/home/runner/workspace/node_modules/ws/lib/receiver.js:167:16)
+    at Receiver._write (/home/runner/workspace/node_modules/ws/lib/receiver.js:94:10)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at Socket.socketOnData (/home/runner/workspace/node_modules/ws/lib/websocket.js:1355:35)
+    at Socket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:191:23)
+New WebSocket connection
+WebSocket message error: TypeError: FirebaseService.setUserOnline is not a function
+    at WebSocket.<anonymous> (/home/runner/workspace/server/routes.ts:45:37)
+    at WebSocket.emit (node:events:524:28)
+    at Receiver.receiverOnMessage (/home/runner/workspace/node_modules/ws/lib/websocket.js:1220:20)
+    at Receiver.emit (node:events:524:28)
+    at Receiver.dataMessage (/home/runner/workspace/node_modules/ws/lib/receiver.js:596:14)
+    at Receiver.getData (/home/runner/workspace/node_modules/ws/lib/receiver.js:496:10)
+    at Receiver.startLoop (/home/runner/workspace/node_modules/ws/lib/receiver.js:167:16)
+    at Receiver._write (/home/runner/workspace/node_modules/ws/lib/receiver.js:94:10)
+    at writeOrBuffer (node:internal/streams/writable:572:12)
+    at _write (node:internal/streams/writable:501:10)
+    at Writable.write (node:internal/streams/writable:510:10)
+    at Socket.socketOnData (/home/runner/workspace/node_modules/ws/lib/websocket.js:1355:35)
+    at Socket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:191:23)
+6:05:10 AM [express] POST /api/auth/login 401 in 0ms :: {"error":"User not found"}
+6:05:12 AM [express] POST /api/auth/login 401 in 1ms :: {"error":"User not found"}
+6:05:14 AM [express] POST /api/auth/login 401 in 1ms :: {"error":"User not found"}
+6:05:29 AM [express] POST /api/auth/login 401 in 1ms :: {"error":"User not found"}
+6:05:45 AM [express] POST /api/auth/login 401 in 1ms :: {"error":"User not found"}
+6:05:45 AM [express] POST /api/auth/login 401 in 1ms :: {"error":"User not found"}

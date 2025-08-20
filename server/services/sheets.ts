@@ -56,8 +56,21 @@ export class GoogleSheetsService {
         body: JSON.stringify(payload)
       });
 
-      const result = await response.json();
-      return result.ok === true;
+      if (!response.ok) {
+        console.error('Google Sheets API error:', response.status, response.statusText);
+        return false;
+      }
+
+      const responseText = await response.text();
+      
+      try {
+        const result = JSON.parse(responseText);
+        return result.ok === true;
+      } catch (parseError) {
+        console.error('Google Sheets response parsing error:', parseError);
+        console.error('Response text:', responseText);
+        return false;
+      }
     } catch (error) {
       console.error('Google Sheets logging error:', error);
       return false;
@@ -109,8 +122,21 @@ export class GoogleSheetsService {
   async testConnection(): Promise<boolean> {
     try {
       const response = await fetch(`${APPSCRIPT_URL}?mode=ping&token=${SHARED_TOKEN}`);
-      const result = await response.json();
-      return result.ok === true;
+      
+      if (!response.ok) {
+        console.error('Google Sheets connection test failed:', response.status);
+        return false;
+      }
+
+      const responseText = await response.text();
+      
+      try {
+        const result = JSON.parse(responseText);
+        return result.ok === true;
+      } catch (parseError) {
+        console.error('Google Sheets ping response parsing error:', parseError);
+        return false;
+      }
     } catch (error) {
       console.error('Google Sheets connection test failed:', error);
       return false;

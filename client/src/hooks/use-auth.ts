@@ -35,6 +35,10 @@ export function useAuth() {
   const generateUserMutation = useMutation({
     mutationFn: async (displayName: string) => {
       const response = await apiRequest('POST', '/api/auth/generate-recovery', { displayName });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create user');
+      }
       return response.json();
     },
     onSuccess: (data) => {

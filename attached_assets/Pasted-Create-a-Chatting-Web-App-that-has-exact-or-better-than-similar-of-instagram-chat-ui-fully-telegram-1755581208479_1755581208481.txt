@@ -1,0 +1,179 @@
+Create a Chatting Web App that has exact or better than similar of instagram chat ui, fully telegram chatting features
+
+All the chat messages will be saved into firebase and also into google sheets, when user deletes it will delete in firebase but not in google sheets
+When they upload a file (img, video etc other than text message) it goes into cloudinary (my account and the url it creates will upload in firebase and sheets) and it shows that media in the chat (all this happens in no time, milli seconds, like better show up in chat and backend it gets uploaded in cloudinary (when they delete, it should be removed in chat but not in cloud, maybe firebase url can go, but in sheet it stays)
+
+No one can do anything in sheets, only the data gets added which the firebase gets, but wont delete in sheets, also the media wont delete in cloudinary
+
+(Also the chat should delete from firebase automatically after 1 week, or the contact is inactive for 2 days, and the web app wont ask for login with email or number, instead it will generate unique id for every user after entering and accepting, and they need to share that id for others to chat in that, their contact will be saved automatically there in their list, so on next time opening they will still be with same id, unless they delete that account/id, new id generates and all data of them will be gone, and if they want to use the same id some where, there should be something unique way that they use to open their profile to login that id (its hard to remember unique id, so something easy to remember but hard to crack by other users to login others account)
+
+No calling, Video Call but remaining every features mostly
+
+And mostly make efficient ways to use firebase as its free plan, cant take more data, so im using cloudinary for upload and urls store in firebase, so maximum try to make chat delete automatically for 1 week and any inactive it should go in a short time
+
+(All users contacts who they chat with will be in their home, other option to add is, they can choose to make their id visible on everyone (public) page where some contacts will be shown and they can chat, if dont like can leave, if they wish can add to contact save to their account, every user get option to enable that, the displaying changes for every user)
+
+This should be fully realtime web application
+
+Use fully Web Technologies (not any other like python etc)
+
+
+### **Firebase Config:**
+const firebaseConfig = {
+    apiKey: "AIzaSyCnYGs6tC6gC5wdem5fsLRqPwGGBFq8lTg",
+    authDomain: "chat-now-d1c98.firebaseapp.com",
+    databaseURL: "https://chat-now-d1c98-default-rtdb.firebaseio.com",
+    projectId: "chat-now-d1c98",
+    storageBucket: "chat-now-d1c98.appspot.com",
+    messagingSenderId: "103307626261",
+    appId: "1:103307626261:web:1176ee5be3e19240a48b1c",
+    measurementId: "G-NVJNRWBEDP"
+};
+
+---
+
+### **Cloudinary Config:**
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/ds1sfucwb/auto/upload';
+const CLOUDINARY_PRESET = 'unsigned_preset';
+
+---
+
+
+### **Google Apps Script Endpoint for Sheets:**
+const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWOQyCYP0sLz5_y4OOCUIvqAbQHknC8rgQAEo0_6NS/dev';
+
+---
+
+
+
+App Script:
+
+/** ====== CONFIG ====== **/
+const SHEET_NAME = 'Messages';
+const ACCEPTED_ORIGINS = ['*']; // keep '*' for easiest dev. Lock down later to your domain.
+const REQUIRE_TOKEN = false;     // set true if you want to require a shared secret token
+const SHARED_TOKEN = 'REPLACE_ME_IF_USED'; // if REQUIRE_TOKEN=true, client must send token
+
+/** ====== HELPERS ====== **/
+function getSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+  }
+  // Ensure header exists and in correct order
+  const header = [
+    'timestamp','messageId','senderId','chatId','groupId','messageType','content',
+    'mediaUrl','mediaType','fileSize','fileName','isPrivate','action','mediaId',
+    'uploadedBy','flaggedUserId','flaggedBy','reason'
+  ];
+  const firstRow = sheet.getRange(1,1,1,header.length).getValues()[0];
+  const hasHeader = firstRow.join('').toLowerCase().includes('timestamp');
+  if (!hasHeader) {
+    sheet.clear();
+    sheet.appendRow(header);
+  }
+  return sheet;
+}
+
+function normalizeRow_(obj) {
+  // Coerce to the exact order (missing fields → empty)
+  return [
+    obj.timestamp || new Date(),
+    obj.messageId || '',
+    obj.senderId || '',
+    obj.chatId || '',
+    obj.groupId || '',
+    obj.messageType || '',
+    obj.content || '',
+    obj.mediaUrl || '',
+    obj.mediaType || '',
+    obj.fileSize || '',
+    obj.fileName || '',
+    obj.isPrivate === true || obj.isPrivate === 'true' ? true : false,
+    obj.action || 'sent',
+    obj.mediaId || '',
+    obj.uploadedBy || '',
+    obj.flaggedUserId || '',
+    obj.flaggedBy || '',
+    obj.reason || ''
+  ];
+}
+
+function appendRow_(obj) {
+  const sheet = getSheet_();
+  const row = normalizeRow_(obj);
+  sheet.appendRow(row);
+}
+
+/** ====== CORS (best-effort) ======
+ * Apps Script doesn’t support arbitrary headers on ContentService responses.
+ * Two strategies:
+ *  1) Use fetch with Content-Type "text/plain" to avoid preflight (recommended).
+ *  2) Or call doGet with query params for testing from browser.
+ * The JSON payload still logs fine.
+ */
+function jsonOut_(payload) {
+  return ContentService
+    .createTextOutput(JSON.stringify(payload))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/** ====== doGet: simple tests from the browser ======
+ * Example:
+ *  https://script.google.com/macros/s/DEPLOY_ID/exec?mode=test
+ *  https://script.google.com/macros/s/DEPLOY_ID/exec?messageId=msg123&senderId=user_abc&chatId=user_abc_user_xyz&messageType=text&content=Hello
+ */
+function doGet(e) {
+  try {
+    const params = e && e.parameter ? e.parameter : {};
+
+    if (REQUIRE_TOKEN && params.token !== SHARED_TOKEN) {
+      return jsonOut_({ ok:false, error: 'invalid_token' });
+    }
+
+    if (params.mode === 'ping' || params.mode === 'test') {
+      // health check
+      return jsonOut_({ ok:true, message:'Sheets logger up' });
+    }
+
+    // If at least messageId or content is present, log a row
+    if (params.messageId || params.content) {
+      appendRow_({
+        timestamp: new Date(),
+        messageId: params.messageId,
+        senderId: params.senderId,
+        chatId: params.chatId,
+        groupId: params.groupId,
+        messageType: params.messageType,
+        content: params.content,
+        mediaUrl: params.mediaUrl,
+        mediaType: params.mediaType,
+        fileSize: params.fileSize,
+        fileName: params.fileName,
+        isPrivate: params.isPrivate,
+        action: params.action,
+        mediaId: params.mediaId,
+        uploadedBy: params.uploadedBy,
+        flaggedUserId: params.flaggedUserId,
+        flaggedBy: params.flaggedBy,
+        reason: params.reason
+      });
+      return jsonOut_({ ok:true, appended:true });
+    }
+
+    return jsonOut_({ ok:true, info:'Use ?mode=ping to test or send params to append.' });
+  } catch (err) {
+    return jsonOut_({ ok:false, error: String(err) });
+  }
+}
+
+/** ====== doPost: production logging from your app ======
+ * Send body as TEXT (not JSON) to avoid preflight:
+ *   fetch(URL, { method:'POST', headers:{'...
+ 
+ 
+ 
+ when creating account it not showing ids
+
+Also there are many ui issues, (make it look professional, responsive, no layout issues, color issues, text formatting etc), should be realtime using application)

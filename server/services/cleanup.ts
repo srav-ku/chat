@@ -33,17 +33,17 @@ export class CleanupService {
     try {
       // Clean up messages older than 7 days
       const oldMessages = await storage.getOldMessages(7);
-      
+
       if (oldMessages.length > 0) {
         console.log(`Found ${oldMessages.length} old messages to cleanup`);
-        
+
         // Delete from local storage
         const messageIds = oldMessages.map(m => m.messageId);
         await storage.deleteMessages(messageIds);
-        
+
         // Clean up from Firebase
-        await firebaseService.cleanupOldMessages(7);
-        
+        await firebaseService.cleanupOldChats(7);
+
         console.log(`Cleaned up ${oldMessages.length} old messages`);
       }
     } catch (error) {
@@ -59,21 +59,21 @@ export class CleanupService {
 
     try {
       const inactiveChats = await storage.getInactiveChats(2);
-      
+
       if (inactiveChats.length > 0) {
         console.log(`Found ${inactiveChats.length} inactive chats to cleanup`);
-        
+
         for (const chat of inactiveChats) {
           // Get messages for this chat
           const messages = await storage.getChatMessages(chat.chatId);
-          
+
           // Delete messages from storage
           const messageIds = messages.map(m => m.messageId);
           await storage.deleteMessages(messageIds);
-          
+
           // Delete chat
           await storage.deleteChat(chat.chatId);
-          
+
           console.log(`Cleaned up inactive chat: ${chat.chatId}`);
         }
       }
@@ -90,7 +90,7 @@ export class CleanupService {
     // Cleanup old messages
     const messageIds = oldMessages.map(m => m.messageId);
     await storage.deleteMessages(messageIds);
-    await firebaseService.cleanupOldMessages(7);
+    await firebaseService.cleanupOldChats(7);
 
     // Cleanup inactive chats
     for (const chat of inactiveChats) {

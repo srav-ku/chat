@@ -1,167 +1,85 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Copy, User, Shield, MessageCircle } from "lucide-react";
+import { Loader2, User, ArrowRight, MessageCircle } from "lucide-react";
 
 export default function Welcome() {
   const [displayName, setDisplayName] = useState("");
-  const [uniqueId, setUniqueId] = useState("");
-  const [recoveryCode, setRecoveryCode] = useState("");
-  const [showRecoveryCode, setShowRecoveryCode] = useState(false);
-  const [generatedUser, setGeneratedUser] = useState<any>(null);
-  
-  const { 
-    generateUser, 
-    login, 
-    isGenerating, 
-    isLoggingIn, 
-    generateError, 
-    loginError 
-  } = useAuth();
-  
+  const [isLoading, setIsLoading] = useState(false);
+  const { generateUser, user, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
-  const handleGenerateUser = async () => {
+  // Always use dark theme
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!displayName.trim()) {
       toast({
-        title: "Name Required",
-        description: "Please enter your display name to continue.",
-        variant: "destructive"
+        title: "Name required",
+        description: "Please enter your display name.",
+        variant: "destructive",
       });
       return;
     }
 
+    setIsLoading(true);
     try {
-      const result = await generateUser(displayName.trim());
-      setGeneratedUser(result);
-      setShowRecoveryCode(true);
+      await generateUser(displayName.trim());
       toast({
-        title: "Account Created! 🎉",
-        description: "Your unique ID and recovery code have been generated.",
+        title: "Welcome!",
+        description: "You've successfully joined ChatNow.",
       });
     } catch (error: any) {
       toast({
-        title: "Generation Failed",
-        description: error.message || "Failed to create your account. Please try again.",
-        variant: "destructive"
+        title: "Error",
+        description: error.message || "Failed to create account. Please try again.",
+        variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleLogin = async (type: 'uniqueId' | 'recoveryCode') => {
-    const credentials = type === 'uniqueId' 
-      ? { uniqueId: uniqueId.trim() }
-      : { recoveryCode: recoveryCode.trim() };
-
-    if (!Object.values(credentials)[0]) {
-      toast({
-        title: "Credential Required",
-        description: `Please enter your ${type === 'uniqueId' ? 'unique ID' : 'recovery code'}.`,
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      await login(credentials);
-      toast({
-        title: "Welcome Back! 👋",
-        description: "You've been successfully logged in.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Login Failed",
-        description: error.message || "Invalid credentials. Please try again.",
-        variant: "destructive"
-      });
-    }
+  const proceedToChat = () => {
+    window.location.href = '/chat';
   };
 
-  const copyToClipboard = async (text: string, label: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast({
-        title: "Copied!",
-        description: `${label} copied to clipboard.`,
-      });
-    } catch (error) {
-      toast({
-        title: "Copy Failed",
-        description: "Please copy the text manually.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  if (showRecoveryCode) {
+  if (isAuthenticated && user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-chat-bg dark:bg-dark-bg p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-instagram-pink to-instagram-purple rounded-full flex items-center justify-center mx-auto mb-4">
-              <Shield className="w-8 h-8 text-white" />
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md mx-auto shadow-2xl border-border">
+          <CardHeader className="text-center space-y-4">
+            <div className="mx-auto w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
+              <MessageCircle className="w-10 h-10 text-primary" />
             </div>
-            <CardTitle className="text-2xl instagram-gradient-text">Account Created!</CardTitle>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Save these credentials safely. You'll need them to access your account.
-            </p>
+            <CardTitle className="text-2xl font-bold text-foreground">Welcome back!</CardTitle>
+            <CardDescription className="text-muted-foreground">
+              You're signed in as <span className="font-medium text-foreground">{user.displayName}</span>
+            </CardDescription>
           </CardHeader>
-          
-          <CardContent className="space-y-6">
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg space-y-4">
-              <div>
-                <Label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                  Your Unique ID
-                </Label>
-                <div className="flex items-center justify-between mt-1 p-3 bg-white dark:bg-gray-900 rounded border font-mono text-sm">
-                  <span data-testid="unique-id">{generatedUser?.user?.uniqueId || "Loading..."}</span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => copyToClipboard(generatedUser?.user?.uniqueId || "", "Unique ID")}
-                    data-testid="button-copy-id"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Share this ID with others to start chatting
-                </p>
-              </div>
-              
-              <div>
-                <Label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                  Recovery Code
-                </Label>
-                <div className="flex items-center justify-between mt-1 p-3 bg-white dark:bg-gray-900 rounded border font-mono text-sm">
-                  <span data-testid="recovery-code">{generatedUser?.recoveryCode || "Loading..."}</span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => copyToClipboard(generatedUser?.recoveryCode || "", "Recovery Code")}
-                    data-testid="button-copy-recovery"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                </div>
-                <p className="text-xs text-red-600 dark:text-red-400 mt-1">
-                  ⚠️ Keep this safe! It's your only way to recover your account
-                </p>
+          <CardContent className="space-y-4">
+            <div className="p-4 bg-muted rounded-lg">
+              <div className="text-sm text-muted-foreground mb-2">Your unique ID:</div>
+              <div className="font-mono text-sm text-foreground bg-background px-3 py-2 rounded border">
+                {user.uniqueId}
               </div>
             </div>
             
-            <Button
-              onClick={() => window.location.reload()}
-              className="w-full btn-instagram"
-              data-testid="button-continue"
+            <Button 
+              onClick={proceedToChat}
+              className="w-full telegram-button"
+              size="lg"
             >
-              <MessageCircle className="w-4 h-4 mr-2" />
-              Continue to ChatNow
+              Start Chatting
+              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </CardContent>
         </Card>
@@ -170,133 +88,63 @@ export default function Welcome() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-chat-bg dark:bg-dark-bg p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-instagram-pink to-instagram-purple rounded-full flex items-center justify-center mx-auto mb-4">
-            <MessageCircle className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <Card className="w-full max-w-md mx-auto shadow-2xl border-border">
+        <CardHeader className="text-center space-y-4">
+          <div className="mx-auto w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
+            <MessageCircle className="w-10 h-10 text-primary" />
           </div>
-          <CardTitle className="text-3xl instagram-gradient-text">ChatNow</CardTitle>
-          <p className="text-gray-600 dark:text-gray-400">
-            Real-time messaging with privacy and style
-          </p>
+          <CardTitle className="text-2xl font-bold text-foreground">Welcome to ChatNow</CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Create an account to start chatting with people around the world
+          </CardDescription>
         </CardHeader>
 
         <CardContent>
-          <Tabs defaultValue="create" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="create">Create Account</TabsTrigger>
-              <TabsTrigger value="login">Sign In</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="create" className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="displayName">Your Display Name</Label>
-                  <Input
-                    id="displayName"
-                    placeholder="Enter your name"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    className="mt-1"
-                    data-testid="input-display-name"
-                  />
-                </div>
-                
-                <Button
-                  onClick={handleGenerateUser}
-                  disabled={isGenerating || !displayName.trim()}
-                  className="w-full btn-instagram"
-                  data-testid="button-create-account"
-                >
-                  {isGenerating ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                      Creating Account...
-                    </>
-                  ) : (
-                    <>
-                      <User className="w-4 h-4 mr-2" />
-                      Create Account
-                    </>
-                  )}
-                </Button>
-                
-                {generateError && (
-                  <p className="text-sm text-red-600 dark:text-red-400 text-center">
-                    {generateError.message}
-                  </p>
-                )}
-                
-                <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
-                  <p>• No email or phone number required</p>
-                  <p>• Your unique ID will be generated automatically</p>
-                  <p>• Keep your recovery code safe for account access</p>
-                </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="login" className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="uniqueId">Unique ID</Label>
-                  <Input
-                    id="uniqueId"
-                    placeholder="usr_xxxxxxxxx"
-                    value={uniqueId}
-                    onChange={(e) => setUniqueId(e.target.value)}
-                    className="mt-1 font-mono"
-                    data-testid="input-unique-id"
-                  />
-                  <Button
-                    onClick={() => handleLogin('uniqueId')}
-                    disabled={isLoggingIn || !uniqueId.trim()}
-                    className="w-full mt-2 btn-outline-instagram"
-                    variant="outline"
-                    data-testid="button-login-id"
-                  >
-                    {isLoggingIn ? "Signing In..." : "Sign In with ID"}
-                  </Button>
-                </div>
-                
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300 dark:border-gray-600" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white dark:bg-card px-2 text-gray-500 dark:text-gray-400">Or</span>
-                  </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="recoveryCode">Recovery Code</Label>
-                  <Input
-                    id="recoveryCode"
-                    placeholder="Enter recovery code"
-                    value={recoveryCode}
-                    onChange={(e) => setRecoveryCode(e.target.value)}
-                    className="mt-1 font-mono"
-                    data-testid="input-recovery-code"
-                  />
-                  <Button
-                    onClick={() => handleLogin('recoveryCode')}
-                    disabled={isLoggingIn || !recoveryCode.trim()}
-                    className="w-full mt-2 btn-outline-instagram"
-                    variant="outline"
-                    data-testid="button-login-recovery"
-                  >
-                    {isLoggingIn ? "Signing In..." : "Recover Account"}
-                  </Button>
-                </div>
-                
-                {loginError && (
-                  <p className="text-sm text-red-600 dark:text-red-400 text-center">
-                    {loginError.message}
-                  </p>
-                )}
-              </div>
-            </TabsContent>
-          </Tabs>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="displayName" className="text-foreground">Display Name</Label>
+              <Input
+                id="displayName"
+                type="text"
+                placeholder="Enter your name"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                className="telegram-input"
+                disabled={isLoading}
+                required
+              />
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full telegram-button"
+              size="lg"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                <>
+                  Join ChatNow
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </>
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-6 p-4 bg-muted rounded-lg">
+            <h3 className="text-sm font-medium text-foreground mb-2">Features:</h3>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              <li>• Real-time messaging</li>
+              <li>• Media sharing</li>
+              <li>• Discover new people</li>
+              <li>• Dark theme interface</li>
+            </ul>
+          </div>
         </CardContent>
       </Card>
     </div>

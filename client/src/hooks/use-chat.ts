@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import { firebaseClient } from '@/lib/firebase';
+import { FirebaseClient } from '@/lib/firebase';
 import { useWebSocket } from './use-websocket';
 import type { Chat, Message, Contact } from '@shared/schema';
 
@@ -23,7 +23,7 @@ export function useChatMessages(chatId: string | null) {
 
     setIsLoading(true);
     
-    const unsubscribe = firebaseClient.listenToChatMessages(chatId, (firebaseMessages) => {
+    const unsubscribe = FirebaseClient.subscribeToMessages(chatId, (firebaseMessages) => {
       setMessages(firebaseMessages);
       setIsLoading(false);
     });
@@ -102,8 +102,9 @@ export function useTypingIndicator(chatId: string | null) {
   useEffect(() => {
     if (!chatId) return;
 
-    const unsubscribe = firebaseClient.listenToTyping(chatId, setTypingUsers);
-    return unsubscribe;
+    // Note: Typing functionality will be implemented via WebSocket
+    // const unsubscribe = FirebaseClient.subscribeToTyping(chatId, setTypingUsers);
+    return () => {}; // Empty cleanup function
   }, [chatId]);
 
   return typingUsers;
@@ -118,7 +119,7 @@ export function useUserStatus(userId: string | null) {
   useEffect(() => {
     if (!userId) return;
 
-    const unsubscribe = firebaseClient.listenToUserStatus(userId, setStatus);
+    const unsubscribe = FirebaseClient.subscribeToUserStatus(userId, setStatus);
     return unsubscribe;
   }, [userId]);
 
@@ -150,7 +151,8 @@ export function useChatRoom(chatId: string | null, currentUserId: string | null)
   const sendTyping = useCallback((isTyping: boolean) => {
     if (!chatId || !currentUserId) return;
 
-    firebaseClient.setTyping(chatId, currentUserId, isTyping);
+    // Typing will be handled via WebSocket for now
+    // FirebaseClient.setTyping(chatId, currentUserId, isTyping);
     sendWSMessage({
       type: 'typing',
       chatId,

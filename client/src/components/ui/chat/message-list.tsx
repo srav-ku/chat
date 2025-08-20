@@ -8,7 +8,8 @@ import {
   Play,
   CheckCheck,
   Check,
-  Clock
+  Clock,
+  MessageCircle
 } from "lucide-react";
 
 interface Message {
@@ -68,11 +69,11 @@ export default function MessageList({
   const getDateDivider = (date: Date | string) => {
     const messageDate = new Date(date);
     if (isToday(messageDate)) return 'Today';
-    
+
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     if (messageDate.toDateString() === yesterday.toDateString()) return 'Yesterday';
-    
+
     return messageDate.toLocaleDateString('en-US', { 
       month: 'short', 
       day: 'numeric',
